@@ -39,7 +39,7 @@ function createOutPut() {
             ])
             .then(answers => {
                 const manager = new Manager(answers.managerName, answers.managerId, answers.managerEmail, answers.managerOfficeNumber);
-                (createdTeam).push(manager)
+                createdTeam.push(manager)
                 createTeam();
             })
     }
@@ -49,38 +49,43 @@ function createOutPut() {
         inquirer
             .prompt([
                 {
-                    type: "confirm",
+                    type: "list",
                     message: "Would you like to add more team members?",
-                    name: "moreMembers"
+                    name: "moreMembers",
+                    choices: ["Yes", "No"]
                 },
             ])
             .then(answers => {
-                switch (answers) {
-                    case answers.moreMembers:
-                        inquirer
-                            .prompt([
-                                {
-                                    type: "list",
-                                    message: "Please select an employee type below:",
-                                    choice: ["Engineer", "Intern"],
-                                    name: "employeeType"
-                                },
-                            ])
-                            .then(answers => {
-                                switch(answers) {
-                                    case "Engineer":
-                                      createEngineer();
-                                      break;
-                                    case "Intern":
-                                      createIntern();
-                                      break;
-                                    default:
-                                      // code block
-                                  }
-                            });
+           if (answers.moreMembers == "Yes"){
+               selectEmployee();
+           }else{
+               renderHtml();
+           }
+            })
+    }
+    const selectEmployee = function () {
+        inquirer
+            .prompt([
+                {
+                    type: "list",
+                    message: "Please select an employee type below:",
+                    choices: ["Engineer", "Intern"],
+                    name: "employeeType"
+                },
+            ])
+            .then(answers => {
+                switch (answers.employeeType) {
+                    case "Engineer":
+                        createEngineer();
                         break;
+                    case "Intern":
+                        createIntern();
+                        break; 
                 }
-            });
+            })
+            .catch(function(err) {
+                console.log(err);
+              });
     }
     //add Engineer function
     const createEngineer = function () {
@@ -109,7 +114,7 @@ function createOutPut() {
             ])
             .then(answers => {
                 const engineer = new Engineer(answers.engineerName, answers.engineerId, answers.engineerEmail, answers.engineerGitHub);
-                (createdTeam).push(engineer)
+                createdTeam.push(engineer)
                 createTeam();
             })
     }
@@ -140,11 +145,21 @@ function createOutPut() {
             ])
             .then(answers => {
                 const intern = new Intern(answers.internName, answers.internId, answers.internEmail, answers.internSchool);
-                (createdTeam).push(intern)
+                createdTeam.push(intern)
                 createTeam();
             })
     }
     //build Team function
+
+    const renderHtml = function () {
+        if (!fs.existsSync(OUTPUT_DIR)) { fs.mkdirSync(OUTPUT_DIR) }
+        fs.writeFileSync(outputPath, render(createdTeam))
+    };
+    const RenderCss = function () {
+        if (!fs.existsSync(OUTPUT_DIR)) { fs.mkdirSync(OUTPUT_DIR) }
+        fs.writeFileSync(outputPath, render(createdTeam))
+    };
+
 
     createManager();
 
