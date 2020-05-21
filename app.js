@@ -6,7 +6,13 @@ const path = require("path");
 const fs = require("fs");
 
 const OUTPUT_DIR = path.resolve(__dirname, "output");
+//`${__dirname}/output`;
 const outputPath = path.join(OUTPUT_DIR, "team.html");
+const outputPath2 = path.join(OUTPUT_DIR, "style.css");
+
+//`${OUTPUT_DIR}/team.html`;
+
+//`${__dirname}/output/team.html`
 
 const render = require("./lib/htmlRenderer");
 
@@ -60,6 +66,7 @@ function createOutPut() {
                selectEmployee();
            }else{
                renderHtml();
+               RenderCss();
            }
             })
     }
@@ -150,14 +157,18 @@ function createOutPut() {
             })
     }
     //build Team function
-
+    //!fs.existSync checks if the path exists  fs mkdirsync makes the directory
     const renderHtml = function () {
         if (!fs.existsSync(OUTPUT_DIR)) { fs.mkdirSync(OUTPUT_DIR) }
         fs.writeFileSync(outputPath, render(createdTeam))
     };
     const RenderCss = function () {
         if (!fs.existsSync(OUTPUT_DIR)) { fs.mkdirSync(OUTPUT_DIR) }
-        fs.writeFileSync(outputPath, render(createdTeam))
+        fs.writeFileSync(outputPath2, `
+        body{
+            background-color: blue;
+        }
+        `)
     };
 
 
